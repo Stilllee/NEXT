@@ -1,11 +1,17 @@
-async function getData() {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-  const response = await fetch("https://api.sampleapis.com/coffee/hot");
-  const json = await response.json();
-  return json;
-}
+import { Suspense } from "react";
+import CoffeTitle from "./CoffeTitle";
+import CoffeContent from "./CoffeContent";
 
 export default async function Data() {
-  const data = await getData();
-  return <div>{JSON.stringify(data)}</div>;
+  return (
+    <div>
+      <Suspense fallback={<h1>Loading</h1>}>
+        <CoffeTitle />
+      </Suspense>
+      <hr />
+      <Suspense fallback={<h1>Loading</h1>}>
+        <CoffeContent />
+      </Suspense>
+    </div>
+  );
 }
