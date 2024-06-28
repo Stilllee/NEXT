@@ -8,8 +8,10 @@ import {
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchRevenue() {
+  noStore();
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
