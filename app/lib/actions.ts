@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
 
 const FormSchema = z.object({
   id: z.string(),
@@ -99,4 +101,23 @@ export async function deleteInvoice(id: string) {
     return { message: '데이터베이스 오류: 청구서를 삭제하지 못했습니다.' };
   }
   revalidatePath('/dashboard/invoices');
+};
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return '잘못된 자격 증명.';
+        default:
+          return '문제가 발생했습니다.';
+      }
+    }
+    throw error;
+  }
 };
